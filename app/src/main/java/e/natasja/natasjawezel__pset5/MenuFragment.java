@@ -77,8 +77,9 @@ public class MenuFragment extends ListFragment {
                                 if (appetizerOrEntree.equals(categorie)) {
                                     String name = object.getString("name");
                                     String description = object.getString("description");
+                                    Float price = Float.valueOf(object.getString("price"));
                                     String imageUrl = object.getString("image_url");
-                                    imageRequestFunction(name, description, imageUrl);
+                                    imageRequestFunction(name, description, price, imageUrl);
 
                                     // construct data source
                                     arrayOfDishes = new ArrayList<Dish>();
@@ -107,16 +108,18 @@ public class MenuFragment extends ListFragment {
     public class Dish {
         public String name;
         public String description;
+        public Float price;
         public Bitmap imageDish;
 
-        public Dish(String name, String description, Bitmap imageDish) {
+        public Dish(String name, String description, Float price, Bitmap imageDish) {
             this.name = name;
             this.description = description;
+            this.price = price;
             this.imageDish = imageDish;
         }
     }
 
-    public void imageRequestFunction(final String name, final String description, String imageUrl) {
+    public void imageRequestFunction(final String name, final String description, final Float price, String imageUrl) {
 
         // bron: https://www.programcreek.com/javi-api-examples/index.php?api=com.android.volley.toolbox.ImageRequest
         ImageRequest imageRequest = new ImageRequest(imageUrl, new Response.Listener<Bitmap>() {
@@ -124,7 +127,7 @@ public class MenuFragment extends ListFragment {
             public void onResponse(Bitmap bitmap) {
                 image = bitmap;
 
-                Dish newDish = new Dish(name, description, image);
+                Dish newDish = new Dish(name, description, price, image);
                 Log.d("MenuFragment", "New dish = " + newDish);
                 arrayOfDishes.add(newDish);
 
@@ -145,7 +148,7 @@ public class MenuFragment extends ListFragment {
 
                         image = null;
 
-                        Dish newDish = new Dish(name, description, image);
+                        Dish newDish = new Dish(name, description, price, image);
                         Log.d("MenuFragment", "New dish = " + newDish);
                         arrayOfDishes.add(newDish);
 
@@ -178,11 +181,11 @@ public class MenuFragment extends ListFragment {
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
 
-        String dish = (String)l.getItemAtPosition(position);
+        Dish dish = (Dish) l.getItemAtPosition(position);
 
         Log.d("RestoDatabase", "The dish is: " + dish);
 
         mRestoDatabase = RestoDatabase.getInstance(getContext());
-        mRestoDatabase.addData(dish, 8);
+        mRestoDatabase.addData(dish.name, dish.price);
     }
 }

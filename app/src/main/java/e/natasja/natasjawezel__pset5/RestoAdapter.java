@@ -31,6 +31,9 @@ public class RestoAdapter extends ResourceCursorAdapter {
         String dish_value = cursor.getString(dish_i);
 
         dish.setText(dish_value);
-        amount.setText(amount_value.toString());
+
+        String amountT = amount_value.toString();
+        amount.setText(amountT);
+
     }
 }

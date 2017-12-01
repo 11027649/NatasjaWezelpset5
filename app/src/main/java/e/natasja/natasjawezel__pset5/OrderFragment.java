@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -35,9 +36,9 @@ import java.util.List;
  */
 public class OrderFragment extends DialogFragment implements View.OnClickListener {
 
-    RestoDatabase mRestoDatabase = RestoDatabase.getInstance(getContext());
+    RestoDatabase mRestoDatabase;
     RestoAdapter adapter;
-    Cursor data = mRestoDatabase.selectAll();
+    Cursor data;
     ListView list;
 
     @Override
@@ -50,6 +51,9 @@ public class OrderFragment extends DialogFragment implements View.OnClickListene
     @Override
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
+
+        mRestoDatabase = RestoDatabase.getInstance(getContext());
+        data = mRestoDatabase.selectAll();
 
         // get all items from the database
         List<String> listData = new ArrayList<>();
@@ -64,7 +68,25 @@ public class OrderFragment extends DialogFragment implements View.OnClickListene
 
         Button cancel = getView().findViewById(R.id.cancelButton);
         Button submit = getView().findViewById(R.id.submitButton);
+        TextView totalPrice = getView().findViewById(R.id.totalPrice);
 
+        float total = 0;
+
+        if (data.moveToFirst()){
+            do {
+
+                Integer price_i = data.getColumnIndex("price");
+                Integer amount_i = data.getColumnIndex("amount");
+
+                Float amount_value = data.getFloat(amount_i);
+                Float dish_value = data.getFloat(price_i);
+
+                total = total + amount_value * dish_value;
+
+            } while (data.moveToNext());
+        }
+        String toTal = "The total price is: €" + total;
+        totalPrice.setText(toTal);
         cancel.setOnClickListener(this);
         submit.setOnClickListener(this);
     }
@@ -77,7 +99,7 @@ public class OrderFragment extends DialogFragment implements View.OnClickListene
                 mRestoDatabase.deleteDatabase();
                 Intent intent = new Intent(getContext(), MainActivity.class);
                 startActivity(intent);
-
+                
                 break;
             case R.id.submitButton:
 

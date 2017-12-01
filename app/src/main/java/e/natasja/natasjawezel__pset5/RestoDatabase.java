@@ -71,7 +71,7 @@ public class RestoDatabase extends SQLiteOpenHelper {
         return instance;
     }
 
-    public void addData(String dish, int price) {
+    public void addData(String dish, Float price) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         if ( field_exists(dish) == true) {

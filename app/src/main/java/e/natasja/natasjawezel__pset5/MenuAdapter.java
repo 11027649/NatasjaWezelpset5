@@ -37,11 +37,13 @@ public class MenuAdapter extends ArrayAdapter<MenuFragment.Dish> {
         // lookup views for data population
         TextView title = (TextView) view.findViewById(R.id.title);
         TextView description = (TextView) view.findViewById(R.id.description);
+        TextView price = (TextView) view.findViewById(R.id.price);
         ImageView imageDish = (ImageView) view.findViewById(R.id.imageDish);
 
         // populate the data into template view using dish object
         title.setText(dish.name);
         description.setText(dish.description);
+        price.setText("€" + dish.price + " ");
         if (dish.imageDish != null) {
             imageDish.setImageBitmap(dish.imageDish);
         }
